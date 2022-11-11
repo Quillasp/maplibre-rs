@@ -29,6 +29,12 @@ pub trait TessellatedLayer: Send {
     fn to_stored_layer(self) -> StoredLayer;
 }
 
+pub trait RasterLayer: Send {
+    fn new(coords: WorldTileCoords, layer_name: String, layer_data: Vec<u8>) -> Self;
+
+    fn to_stored_layer(self) -> StoredLayer;
+}
+
 pub struct DefaultTileTessellated {
     pub coords: WorldTileCoords,
 }
@@ -94,10 +100,35 @@ impl TessellatedLayer for DefaultTessellatedLayer {
     }
 }
 
+pub struct DefaultRasterLayer {
+    pub coords: WorldTileCoords,
+    pub layer_name: String,
+    pub layer_data: Vec<u8>,
+}
+
+impl RasterLayer for DefaultRasterLayer {
+    fn new(coords: WorldTileCoords, layer_name: String, layer_data: Vec<u8>) -> Self {
+        Self {
+            coords,
+            layer_name,
+            layer_data,
+        }
+    }
+
+    fn to_stored_layer(self) -> StoredLayer {
+        StoredLayer::RasterLayer {
+            coords: self.coords,
+            layer_name: "raster".to_string(),
+            layer_data: self.layer_data,
+        }
+    }
+}
+
 pub trait Transferables: 'static {
     type TileTessellated: TileTessellated;
     type UnavailableLayer: UnavailableLayer;
     type TessellatedLayer: TessellatedLayer;
+    type RasterLayer: RasterLayer;
 }
 
 #[derive(Copy, Clone)]
@@ -107,4 +138,5 @@ impl Transferables for DefaultTransferables {
     type TileTessellated = DefaultTileTessellated;
     type UnavailableLayer = DefaultUnavailableLayer;
     type TessellatedLayer = DefaultTessellatedLayer;
+    type RasterLayer = DefaultRasterLayer;
 }

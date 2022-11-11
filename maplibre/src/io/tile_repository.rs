@@ -22,6 +22,11 @@ pub enum StoredLayer {
         /// Holds for each feature the count of indices.
         feature_indices: Vec<u32>,
     },
+    RasterLayer {
+        coords: WorldTileCoords,
+        layer_name: String,
+        layer_data: Vec<u8>,
+    },
 }
 
 impl StoredLayer {
@@ -29,6 +34,7 @@ impl StoredLayer {
         match self {
             StoredLayer::UnavailableLayer { coords, .. } => *coords,
             StoredLayer::TessellatedLayer { coords, .. } => *coords,
+            StoredLayer::RasterLayer { coords, .. } => *coords,
         }
     }
 
@@ -36,6 +42,7 @@ impl StoredLayer {
         match self {
             StoredLayer::UnavailableLayer { layer_name, .. } => layer_name.as_str(),
             StoredLayer::TessellatedLayer { layer_name, .. } => layer_name.as_str(),
+            StoredLayer::RasterLayer { layer_name, .. } => layer_name.as_str(),
         }
     }
 }
@@ -103,7 +110,7 @@ impl TileRepository {
     /// [crate::io::tile_repository::StoredLayer].
     /// If the space is occupied, the tessellated layer is added to the current
     /// [crate::io::tile_repository::StoredLayer].
-    pub fn put_layer(&mut self, layer: StoredLayer) {
+    pub fn put_tesselated_layer(&mut self, layer: StoredLayer) {
         if let Some(entry) = layer
             .get_coords()
             .build_quad_key()
@@ -128,7 +135,7 @@ impl TileRepository {
 
     /// Returns the list of tessellated layers at the given world tile coords. None if tile is
     /// missing from the cache.
-    pub fn iter_layers_at(
+    pub fn iter_tesselated_layers_at(
         &self,
         coords: &WorldTileCoords,
     ) -> Option<impl Iterator<Item = &StoredLayer> + '_> {

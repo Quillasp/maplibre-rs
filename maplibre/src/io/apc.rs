@@ -30,6 +30,7 @@ pub enum Message<T: Transferables> {
     TileTessellated(T::TileTessellated),
     UnavailableLayer(T::UnavailableLayer),
     TessellatedLayer(T::TessellatedLayer),
+    RasterLayer(T::RasterLayer),
 }
 
 /// Inputs for an [`AsyncProcedure`]
@@ -94,7 +95,7 @@ pub type AsyncProcedure<C> = fn(input: Input, context: C) -> AsyncProcedureFutur
 /// [`PassingAsyncProcedureCall`]. This implementation does not depend on shared-memory compared to
 /// [`SchedulerAsyncProcedureCall`]. In fact, on the web we are currently not depending on
 /// shared-memory because that feature is hidden behind feature flags in browsers
-/// (see [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer).
+/// (see [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer)).
 ///
 ///
 // TODO: Rename to AsyncProcedureCaller?

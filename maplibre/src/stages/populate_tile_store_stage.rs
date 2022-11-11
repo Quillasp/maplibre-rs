@@ -8,7 +8,7 @@ use crate::{
     io::{
         apc::{AsyncProcedureCall, Message},
         tile_repository::StoredLayer,
-        transferables::{TessellatedLayer, TileTessellated, UnavailableLayer},
+        transferables::{RasterLayer, TessellatedLayer, TileTessellated, UnavailableLayer},
     },
     kernel::Kernel,
     schedule::Stage,
@@ -51,7 +51,7 @@ impl<E: Environment> Stage for PopulateTileStore<E> {
                         layer.layer_name(),
                         layer.get_coords()
                     );
-                    tile_repository.put_layer(layer);
+                    tile_repository.put_tesselated_layer(layer);
                 }
                 Message::TessellatedLayer(data) => {
                     let layer: StoredLayer = data.to_stored_layer();
@@ -65,7 +65,21 @@ impl<E: Environment> Stage for PopulateTileStore<E> {
                         layer.layer_name(),
                         layer.get_coords()
                     );
-                    tile_repository.put_layer(layer);
+                    tile_repository.put_tesselated_layer(layer);
+                }
+                Message::RasterLayer(data) => {
+                    let layer: StoredLayer = data.to_stored_layer();
+                    tracing::debug!(
+                        "Layer {} at {} reached main thread",
+                        layer.layer_name(),
+                        layer.get_coords()
+                    );
+                    log::warn!(
+                        "Layer {} at {} reached main thread",
+                        layer.layer_name(),
+                        layer.get_coords()
+                    );
+                    tile_repository.put_tesselated_layer(layer);
                 }
             }
         }
