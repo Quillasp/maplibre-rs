@@ -97,6 +97,8 @@ impl Processable for TessellateLayer {
                 );
             } else {
                 // FIXME: Handle result
+                tessellator.buffer.vertices.iter().for_each(|f| log::info!("Pos {:?}", f.position));
+                tessellator.buffer.vertices.iter().for_each(|f| log::info!("Normal {:?}", f.normal));
                 context.processor_mut().layer_tesselation_finished(
                     coords,
                     tessellator.buffer.into(),
