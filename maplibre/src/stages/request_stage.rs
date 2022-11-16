@@ -41,6 +41,7 @@ impl<E: Environment> Stage for RequestStage<E> {
                 World {
                     tile_repository,
                     view_state,
+                    ..
                 },
             style,
             ..
@@ -69,14 +70,11 @@ pub fn schedule<
     input: Input,
     context: C,
 ) -> AsyncProcedureFuture {
-    // FIXME: improve input handling
-    let input = match input {
-        Input::TileRequest(input) => Some(input),
-        _ => None,
-    }
-    .unwrap(); // FIXME (wasm-executor): Remove unwrap
-
     Box::pin(async move {
+        let Input::TileRequest(input) = input else {
+            return Err(Error::APC)
+        };
+
         let coords = input.coords;
         let client = context.source_client();
 
@@ -100,18 +98,18 @@ pub fn schedule<
                 log::error!("{:?}", &e);
                 for to_load in &input.layers {
                     tracing::warn!("layer {} at {} unavailable", to_load, coords);
-                    // FIXME: Handle result
                     context.send(
-                        Message::UnavailableLayer(<<E::AsyncProcedureCall as AsyncProcedureCall<
+                        Message::LayerUnavailable(<<E::AsyncProcedureCall as AsyncProcedureCall<
                             E::HttpClient,
-                        >>::Transferables as Transferables>::UnavailableLayer::new(
+                        >>::Transferables as Transferables>::LayerUnavailable::new(
                             input.coords,
                             to_load.to_string(),
                         )),
-                    );
+                    )?;
                 }
             }
         }
+        Ok(())
     })
 }
 
