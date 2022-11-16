@@ -13,9 +13,7 @@ use bytemuck::Pod;
 use crate::{
     coords::{Quadkey, WorldTileCoords},
     render::resource::{
-        raster::RasterResources, Queue, INDICES,
-        ROOT, /*, LOWER_LEFT, LOWER_RIGHT,  UPPER_LEFT,
-             UPPER_RIGHT*/
+        raster::RasterResources, Queue, INDICES, ROOT
     },
     style::layer::StyleLayer,
     tessellation::OverAlignedVertexBuffer,
@@ -313,8 +311,8 @@ impl<Q: Queue<B>, B, V: Pod, I: Pod, TM: Pod, FM: Pod> BufferPool<Q, B, V, I, TM
             buffer_vertices: self.vertices.make_room(vertices_bytes, &mut self.index),
             buffer_indices: self.indices.make_room(indices_bytes, &mut self.index),
             usable_indices: 6,
-            buffer_feature_metadata: None,
             buffer_layer_metadata: None,
+            buffer_feature_metadata: None,
             raster: true,
         };
 

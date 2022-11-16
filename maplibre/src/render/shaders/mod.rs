@@ -323,57 +323,64 @@ impl Shader for RasterTileShader {
             source: include_str!("tile_raster.vertex.wgsl"),
             entry_point: "main",
             buffers: vec![
+                // vertex data
                 VertexBufferLayout {
-                    array_stride: std::mem::size_of::<ShaderTextureVertex>() as wgpu::BufferAddress,
-                    step_mode: wgpu::VertexStepMode::Vertex,
-                    attributes: vec![
-                        // position
-                        wgpu::VertexAttribute {
-                            offset: 0,
-                            format: wgpu::VertexFormat::Float32x2,
-                            shader_location: 0,
-                        },
-                        // texture coordinate
-                        wgpu::VertexAttribute {
-                            offset: wgpu::VertexFormat::Float32x2.size(),
-                            format: wgpu::VertexFormat::Float32x2,
-                            shader_location: 1,
-                        },
-                    ],
+                  array_stride: std::mem::size_of::<ShaderVertex>() as u64,
+                  step_mode: wgpu::VertexStepMode::Vertex,
+                  attributes: vec![
+                      // position
+                      wgpu::VertexAttribute {
+                          offset: 0,
+                          format: wgpu::VertexFormat::Float32x2,
+                          shader_location: 0,
+                      },
+                      // normal
+                      wgpu::VertexAttribute {
+                          offset: wgpu::VertexFormat::Float32x2.size(),
+                          format: wgpu::VertexFormat::Float32x2,
+                          shader_location: 1,
+                      },
+                      // texture coordinate
+                      wgpu::VertexAttribute {
+                          offset: 2 * wgpu::VertexFormat::Float32x2.size(),
+                          format: wgpu::VertexFormat::Float32x2,
+                          shader_location: 2,
+                      },
+                  ],
                 },
                 // tile metadata
                 VertexBufferLayout {
-                    array_stride: std::mem::size_of::<ShaderTileMetadata>() as u64,
-                    step_mode: wgpu::VertexStepMode::Instance,
-                    attributes: vec![
-                        // translate
-                        wgpu::VertexAttribute {
-                            offset: 0,
-                            format: wgpu::VertexFormat::Float32x4,
-                            shader_location: 4,
-                        },
-                        wgpu::VertexAttribute {
-                            offset: 1 * wgpu::VertexFormat::Float32x4.size(),
-                            format: wgpu::VertexFormat::Float32x4,
-                            shader_location: 5,
-                        },
-                        wgpu::VertexAttribute {
-                            offset: 2 * wgpu::VertexFormat::Float32x4.size(),
-                            format: wgpu::VertexFormat::Float32x4,
-                            shader_location: 6,
-                        },
-                        wgpu::VertexAttribute {
-                            offset: 3 * wgpu::VertexFormat::Float32x4.size(),
-                            format: wgpu::VertexFormat::Float32x4,
-                            shader_location: 7,
-                        },
-                        // zoom_factor
-                        wgpu::VertexAttribute {
-                            offset: 4 * wgpu::VertexFormat::Float32x4.size(),
-                            format: wgpu::VertexFormat::Float32,
-                            shader_location: 9,
-                        },
-                    ],
+                  array_stride: std::mem::size_of::<ShaderTileMetadata>() as u64,
+                  step_mode: wgpu::VertexStepMode::Instance,
+                  attributes: vec![
+                      // translate
+                      wgpu::VertexAttribute {
+                          offset: 0,
+                          format: wgpu::VertexFormat::Float32x4,
+                          shader_location: 4,
+                      },
+                      wgpu::VertexAttribute {
+                          offset: 1 * wgpu::VertexFormat::Float32x4.size(),
+                          format: wgpu::VertexFormat::Float32x4,
+                          shader_location: 5,
+                      },
+                      wgpu::VertexAttribute {
+                          offset: 2 * wgpu::VertexFormat::Float32x4.size(),
+                          format: wgpu::VertexFormat::Float32x4,
+                          shader_location: 6,
+                      },
+                      wgpu::VertexAttribute {
+                          offset: 3 * wgpu::VertexFormat::Float32x4.size(),
+                          format: wgpu::VertexFormat::Float32x4,
+                          shader_location: 7,
+                      },
+                      // zoom_factor
+                      wgpu::VertexAttribute {
+                          offset: 4 * wgpu::VertexFormat::Float32x4.size(),
+                          format: wgpu::VertexFormat::Float32,
+                          shader_location: 9,
+                      },
+                  ],
                 },
             ],
         }
