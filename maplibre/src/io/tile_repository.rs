@@ -110,7 +110,7 @@ impl TileRepository {
     /// [crate::io::tile_repository::StoredLayer].
     /// If the space is occupied, the tessellated layer is added to the current
     /// [crate::io::tile_repository::StoredLayer].
-    pub fn put_layer(&mut self, layer: StoredLayer) {
+    pub fn put_tesselated_layer(&mut self, layer: StoredLayer) {
         if let Some(entry) = layer
             .get_coords()
             .build_quad_key()
