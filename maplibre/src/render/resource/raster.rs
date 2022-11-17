@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use crate::coords::WorldTileCoords;
 use crate::render::{
     resource::{RenderPipeline, Texture},
     settings::{Msaa, RendererSettings},
@@ -31,7 +33,7 @@ pub struct RasterResources {
     pub msaa: Option<Msaa>,
     pub texture: Option<Texture>,
     pub pipeline: Option<wgpu::RenderPipeline>,
-    pub bind_group: Option<wgpu::BindGroup>,
+    pub bind_groups: HashMap<WorldTileCoords, wgpu::BindGroup>,
 }
 
 impl RasterResources {
@@ -93,8 +95,8 @@ impl RasterResources {
         );
     }
 
-    pub fn set_raster_bind_group(&mut self, device: &wgpu::Device) {
-        self.bind_group = Some(device.create_bind_group(&wgpu::BindGroupDescriptor {
+    pub fn set_raster_bind_group(&mut self, device: &wgpu::Device, coords : &WorldTileCoords) {
+        self.bind_groups.insert(coords.clone(),device.create_bind_group(&wgpu::BindGroupDescriptor {
             layout: &self.pipeline.as_ref().unwrap().get_bind_group_layout(0),
             entries: &[
                 wgpu::BindGroupEntry {
@@ -120,7 +122,7 @@ impl Default for RasterResources {
             msaa: None,
             texture: None,
             pipeline: None,
-            bind_group: None,
+            bind_groups: HashMap::new(),
         }
     }
 }
