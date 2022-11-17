@@ -65,7 +65,16 @@ impl RasterSource {
     }
 
     pub fn format(&self, coords: &WorldTileCoords) -> String {
-        let tile_coords = coords.into_tile(TileAddressingScheme::TMS).unwrap();
+        let tile_coords = coords.into_tile(TileAddressingScheme::XYZ).unwrap();
+        println!(
+            "{url}/{z}/{x}/{y}.{filetype}?key={key}",
+            url = self.url,
+            z = tile_coords.z,
+            x = tile_coords.x,
+            y = tile_coords.y,
+            filetype = self.filetype,
+            key = self.key,
+        );
         format!(
             "{url}/{z}/{x}/{y}.{filetype}?key={key}",
             url = self.url,
